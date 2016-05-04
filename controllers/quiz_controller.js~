@@ -26,6 +26,7 @@ exports.index = function(req, res, next){
 exports.show = function(req, res, next){
          var answer = req.query.answer || '';
          res.render('quizzes/show',{quiz: req.quiz,
+                                    question:req.quiz.question,
                                   answer: answer});
 };
 
