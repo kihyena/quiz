@@ -1,4 +1,5 @@
 var models = require('../models');
+var Sequelize = require('sequelize');
 
 //Autoload el quiz asociado a :quizId
 exports.load = function(req, res, next, quizId){
