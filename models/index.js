@@ -34,8 +34,10 @@ sequelize.sync().then(function(){ //sync crea la tabla quiz
       return Quiz.create({question: 'Capital de Italia', answer: 'Roma'}).then(function(){
         console.log('Base de datos inicializada con datos');
       });
+    }
+  });
 }).catch(function(error){
-  console.log("Error Sincronizando las tablas de la BBDD: ",error);
+  console.log("Error Sincronizando las tablas de la BBDD: ", error);
   process.exit(1);
 });
 
