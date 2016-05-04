@@ -42,7 +42,7 @@ exports.check = function(req, res, next){
 
 exports.new = function(req, res, next){
   var quiz = models.Quiz.build({question:"", answer: ""});
-  res.render('quizzes/new', {quiz:quiz});
+  res.render('quizzes/new', {quiz: quiz});
 };
 
 //POST /quizzes/create
