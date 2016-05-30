@@ -1,4 +1,4 @@
-    <label for="preg"> Pregunta: </label>
+<label for="preg"> Pregunta: </label>
     <input type="text" id="preg" name="quiz[question]" value="<%= quiz.question %>" placeholder="Pregunta" /><p>
     
     <label for="resp"> Respuesta: </label>

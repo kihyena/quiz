@@ -8,4 +8,13 @@
   <% } %>
 </table>
 
+<p> Buscar pregunta: </p>
+<p>
+  <form method="get" action="/quizzes">
+    <label for="preg"> Texto a buscar: </label>
+    <input type="text" name="search" value="" placeholder="" /><p>
+    <input type="submit" value="Buscar">
+ </form>
+</p>
+
 <a href="/quizzes/new"><button type="button">Crear pregunta</button></a>
