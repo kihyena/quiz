@@ -10,7 +10,7 @@ body {
 a {
   color: #00B7FF;
 }
-.right{float:right;}
+
 header{text-align: center;}
 nav {text-align: center;}
 section {text-align: left;}

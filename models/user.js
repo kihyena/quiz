@@ -14,6 +14,12 @@ module.exports = function(sequelize, DataTypes) {
 	  },
 	  salt:{ type: DataTypes.STRING},
 	  isAdmin:{ type: DataTypes.BOOLEAN, defaultValue: false}
+	},
+	{instanceMethods: {
+		verifyPassword: function(password){
+			return encryptPassword(password, this.salt)===this.password;
+		}
+	}
   });
 };
 
