@@ -44,7 +44,7 @@ exports.show = function(req, res, next){
 	 if(formato==='json'){
            res.send(JSON.stringify(req.quiz));
          }else if (formato === 'html' || formato ===''){
-           res.render('quizzes/show',{quiz: req.quiz,
+           res.render('quizzes/show',{quiz: quiz,
                                       answer: answer});
          }else{
            res.send("Formato no válido");
