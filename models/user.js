@@ -10,6 +10,7 @@ module.exports = function(sequelize, DataTypes) {
 				//String aleatorio usado como salt
 				this.salt = Math.round((new Date().valueOf() * Math.random()))+'';
 				this.setDataValue('password', encryptPassword(password, this.salt));
+		}
 	  },
 	  salt:{ type: DataTypes.STRING},
 	  isAdmin:{ type: DataTypes.BOOLEAN, defaultValue: false}
