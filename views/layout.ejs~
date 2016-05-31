@@ -36,7 +36,7 @@
             <h3>Tareas completadas con éxito</h3>
             <ul>
               <% for(var i in messages.success) { %>
-                   <li> <%= messages.succes[i] %> </li>
+                   <li> <%= messages.success[i] %> </li>
               <% } %> 
             </ul>
           </article>

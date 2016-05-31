@@ -17,11 +17,18 @@ exports.load = function(req, res, next, quizId){
 
 //GET /quizzes
 exports.index = function(req, res, next){
+  var formato = req.params.format || '';
   var busqueda = req.query.search || '';
   busqueda.replace(/ /g,'%');
   busqueda = "%"+busqueda+"%";
   models.Quiz.findAll({where: {question: {$like: busqueda}}}).then(function(quizzes){
-    res.render('quizzes/index.ejs', {quizzes: quizzes});
+    if(formato==='json'){
+      res.send(JSON.stringify(quizzes));
+    }else if (formato === 'html' || formato ===''){
+      res.render('quizzes/index.ejs', {quizzes: quizzes});
+    }else{
+      res.send("Formato no válido");
+    }
   }).catch(function(error) {next(error);});
 
 //  models.Quiz.findAll().then(function(quizzes){
@@ -32,9 +39,16 @@ exports.index = function(req, res, next){
 
 // GET/quizzes/:id
 exports.show = function(req, res, next){
+         var formato = req.params.format || '';
          var answer = req.query.answer || '';
-         res.render('quizzes/show',{quiz: req.quiz,
-                                    answer: answer});
+	 if(formato==='json'){
+           res.send(JSON.stringify(req.quiz));
+         }else if (formato === 'html' || formato ===''){
+           res.render('quizzes/show',{quiz: req.quiz,
+                                      answer: answer});
+         }else{
+           res.send("Formato no válido");
+         }
 };
 
 // GET/quizzes/:id/check
