@@ -46,7 +46,7 @@ exports.show = function(req, res, next){
          }else if (formato === 'html' || formato ===''){
            res.render('quizzes/show',{quiz: req.quiz,
                                       answer: answer});
-         else{
+         }else{
            res.send("Formato no válido");
          }
 };
