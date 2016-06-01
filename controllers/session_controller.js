@@ -55,11 +55,11 @@ exports.destroy = function(req, res, next) {
     res.redirect("/session"); // redirect a login
 };
 
-exports.loginRequiired = function (req, res, next) {
+exports.loginRequired = function (req, res, next) {
     if(req.session.user) {
 	next();
     }else{
-	res.redirect('/session?redir='+(req.param('redir')|| req.url);
+	res.redirect('/session?redir='+(req.param('redir')|| req.url));
     }
 };
 
