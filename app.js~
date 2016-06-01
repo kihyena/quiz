@@ -37,14 +37,14 @@ app.use(function(req,res,next){
 });
 app.use( function(req, res, next) {
  if (req.session.user ) {
- if (req.session.user.expires < Date.now()) {
- delete req.session.user;
- } else {
- req.session.user.expires = Date.now()+120000;
- }
+ 	if (req.session.user.expires < Date.now()) {
+ 	  delete req.session.user;
+        } else {
+ 	  req.session.user.expires = Date.now()+120000;
+ 	}
  }
  next();
-};
+});
 
 app.use('/', routes);
 
