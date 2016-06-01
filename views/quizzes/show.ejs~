@@ -16,7 +16,7 @@
 	<li><%= comment.text %> </li>
    <%} else if (session.user) { %>
 	<li><%= comment.text %> </li>
-	<a haref="/quizzes/<%=quis.id %>/comments/<%= comment.id%>/accept?_method=PUT"><button>Aceptar</button></a>
+	<a haref="/quizzes/<%=quiz.id %>/comments/<%= comment.id%>/accept?_method=PUT"><button>Aceptar</button></a>
    <% } %>
 <% } %>
 </ul>
