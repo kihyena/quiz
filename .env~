@@ -1,2 +1,3 @@
 DATABASE_URL=postgres://mittroepwopciv:1ccVNFuW6my0ApR8TIwYLuJJFO@ec2-107-20-174-127.compute-1.amazonaws.com:5432/d4t9dqr6c482rs
 DATABASE_STORAGE=''
+CLOUDINARY_URL=cloudinary://152545865389463:_1D8ZwsHG_tpWMGln9k557Fbo5w@kihyena

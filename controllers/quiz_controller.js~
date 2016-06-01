@@ -4,11 +4,11 @@ var cloudinary = require('cloudinary');
 var fs = require('fs');
 
 //Opciones para imagenes subidas a Cloudinary
-var cloudinary_image_options = {crop: 'limit', width: 200, height:200, radius 5, border:'3ps_solid_blue', tags:['core', 'quiz-kihyena']};
+var cloudinary_image_options = {crop: 'limit', width: 200, height:200, radius: 5, border:'3ps_solid_blue', tags:['core', 'quiz-kihyena']};
 
 //Autoload el quiz asociado a :quizId
 exports.load = function(req, res, next, quizId){
-  models.Quiz.findById(quizId, {include: [models.Comment,models.Attachment]}).then(function(quiz){
+  models.Quiz.findById(quizId, {include: [models.Comment, models.Attachment]}).then(function(quiz){
     if(quiz){
       req.quiz = quiz;
       next();
@@ -26,7 +26,8 @@ exports.index = function(req, res, next){
   var busqueda = req.query.search || '';
   busqueda.replace(/ /g,'%');
   busqueda = "%"+busqueda+"%";
-  models.Quiz.findAll({where: {question: {$like: busqueda}}}, {include:[models.Attachment]}).then(function(quizzes){
+  models.Quiz.findAll({include:[models.Attachment]}).then(function(quizzes){
+  //models.Quiz.findAll({where: {question: {$like: busqueda}}}, {include:[models.Attachment]}).then(function(quizzes){
     if(formato==='json'){
       res.send(JSON.stringify(quizzes));
     }else if (formato === 'html' || formato ===''){
@@ -77,20 +78,21 @@ exports.new = function(req, res, next){
 exports.create = function(req, res, next){
   var authorId = req.session.user && req.session.user.id || 0;
 
-  var quiz = models.Quiz.build({question: req.body.quiz.question,
-                                answer: req.body.quiz.answer,
-				AuthorId: authorId});
+  var quiz = {question: req.body.question, answer: req.body.answer, AuthorId: authorId};
+
   models.Quiz.create(quiz).then(function(quiz) {
 	req.flash('success', 'Pregunta y Respuesta guardadas con exito.');
+
 	if(!req.file){
 	   req.flash('info', 'Es un Quiz sin imagen');
 	   return;
 	}
+
 	//Salvar la imagen en Cloudinary
 	return uploadResourceToCloudinary(req).then(function(uploadResult){
 	   //Crear nuevo attachment en la BBDD
 	   return createAttachment(req, uploadResult, quiz);
-	  });
+	});
   }).then(function(){
 	res.redirect('/quizzes');
   }).catch(Sequelize.ValidationError, function(error){
@@ -123,21 +125,21 @@ exports.edit = function(req, res, next){
 
 //PUT /quizzes/:id
 exports.update = function(req, res, next){
-  req.quiz.question= req.body.quiz.question;
-  req.quiz.answer = req.body.quiz.answer;
+  req.quiz.question= req.body.question;
+  req.quiz.answer = req.body.answer;
   
   req.quiz.save({fields:["question", "answer"]}).then(function(quiz) {
       req.flash('success', 'Quiz editado con éxito');
 
       if(!req.file){
-	   req.flash('info', 'Es un Quiz sin imagen');
+	   req.flash('info', 'Tenemos un Quiz sin imagen');
 	   if(quiz.Attachment){
 		cloudinary.api.delete_resources(quiz.Attachment.public_id);
 		return quiz.Attachment.destroy();
 	   }
 	   return;
 	}
-	return uploadResourceToCloudinary(reg).then(function(uploadResult){
+	return uploadResourceToCloudinary(req).then(function(uploadResult){
 	   //Crear nuevo attachment en la BBDD
 	   return createAttachment(req, uploadResult, quiz);
 	  });
@@ -213,6 +215,37 @@ function createAttachment(req, uploadResult, quiz) {
                                       QuizId: quiz.id })
     .then(function(attachment) {
         req.flash('success', 'Imagen nueva guardada con éxito.');
+    })
+    .catch(function(error) { // Ignoro errores de validacion en imagenes
+        req.flash('error', 'No se ha podido salvar la nueva imagen: '+error.message);
+        cloudinary.api.delete_resources(uploadResult.public_id);
+    });
+}
+
+function updateAttachment(req, uploadResult, quiz) {
+    if (!uploadResult) {
+        return Promise.resolve();
+    }
+
+    // Recordar public_id de la imagen antigua.
+    var old_public_id = quiz.Attachment ? quiz.Attachment.public_id : null;
+
+    return quiz.getAttachment()
+    .then(function(attachment) {
+        if (!attachment) {
+            attachment = models.Attachment.build({ QuizId: quiz.id });
+        }
+        attachment.public_id = uploadResult.public_id;
+        attachment.url = uploadResult.url;
+        attachment.filename = req.file.originalname;
+        attachment.mime = req.file.mimetype;
+        return attachment.save();
+    })
+    .then(function(attachment) {
+        req.flash('success', 'Imagen nueva guardada con éxito.');
+        if (old_public_id) {
+            cloudinary.api.delete_resources(old_public_id);
+        }
     })
     .catch(function(error) { // Ignoro errores de validacion en imagenes
         req.flash('error', 'No se ha podido salvar la nueva imagen: '+error.message);

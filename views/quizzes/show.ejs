@@ -1,8 +1,8 @@
 <p>
 <form method="get" action="<%= quiz.id %>/check">
     <p>Pregunta:<%= quiz.question %> </p>
-	<% if (quizzes[i].Attachment) {%>
-	   <img src="<%= quizzes[i].Attachment.url %>" width="50px" />
+	<% if (quiz.Attachment) {%>
+	   <img src="<%= quiz.Attachment.url %>" width="50px" />
 	<% }else{%>
 	   <img src="/images/question.png" width="50px" />
 	<% } %>
