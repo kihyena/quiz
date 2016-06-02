@@ -19,7 +19,12 @@
 <% for (var i in quiz.Comments){ 
    var comment =quiz.Comments[i];
    if (comment.accepted) {%>
-	<li><%= comment.text %> </li>
+	<% for (var j in users) {%>
+	<%=comment.AutorId%>
+	<% if (users[j].id === comment.AuthorId) { %>
+	<li><%= comment.text %> (by <%= users[j].username %>)</li>
+	<% }%>
+	<% }%>
    <%} else if (session.user && (session.user.isAdmin || (quiz.AuthorId === session.user.id))) { %>
 	<li><%= comment.text %> </li>
 	<a href="/quizzes/<%=quiz.id %>/comments/<%= comment.id%>/accept?_method=PUT"><button>Aceptar</button></a>

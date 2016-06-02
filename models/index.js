@@ -35,26 +35,15 @@ var User = sequelize.import(path.join(__dirname,'user'));
 //Importar la definicion de la tabla Attachments de attachment.js
 var Attachment = sequelize.import(path.join(__dirname,'attachment'));
 
-//sequelize.sync() crea e inicializa tabla de preguntas en DB
-//sequelize.sync().then(function(){ //sync crea la tabla quiz
-//  return Quiz.count().then(function(c){
-//    if (c===0){ //la tabla se inicializa si está vacia
-//      return Quiz.bulkCreate([{question: 'Capital de Italia', answer: 'Roma'}, {question: 'Capital de Portugal', answer: 'Lisboa'}]).then(function(){
-//        console.log('Base de datos inicializada con datos');
-//      });
-//    }
-//  });
-//}).catch(function(error){
-//  console.log("Error Sincronizando las tablas de la BBDD: ", error);
-//  process.exit(1);
-//});
-
 //Relaciones entre modelos
 Comment.belongsTo(Quiz);
 Quiz.hasMany(Comment);
 
 User.hasMany(Quiz, {foreignKey: 'AuthorId'});
 Quiz.belongsTo(User, {as: 'Author', foreignKey: 'AuthorId'});
+
+User.hasMany(Comment,{foreignKey: 'AuthorId'});
+Comment.belongsTo(User, {as: 'Author', foreignKey: 'AuthorId'});
 
 Attachment.belongsTo(Quiz);
 Quiz.hasOne(Attachment);

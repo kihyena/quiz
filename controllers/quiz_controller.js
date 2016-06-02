@@ -5,7 +5,7 @@ var fs = require('fs');
 var Promise =require('promise');
 
 //Opciones para imagenes subidas a Cloudinary
-var cloudinary_image_options = {crop: 'limit', width: 200, height:200, radius: 5, border:'3ps_solid_blue', tags:['core', 'quiz-kihyena']};
+var cloudinary_image_options = {crop: 'limit', width: 200, height:200, radius: 5, border:'3px_solid_blue', tags:['core', 'quiz-kihyena']};
 
 //Autoload el quiz asociado a :quizId
 exports.load = function(req, res, next, quizId){
@@ -27,8 +27,7 @@ exports.index = function(req, res, next){
   var busqueda = req.query.search || '';
   busqueda.replace(/ /g,'%');
   busqueda = "%"+busqueda+"%";
-  models.Quiz.findAll({include:[models.Attachment]}).then(function(quizzes){
-  //models.Quiz.findAll({where: {question: {$like: busqueda}}}, {include:[models.Attachment]}).then(function(quizzes){
+  models.Quiz.findAll({where: {question: {$like: busqueda}}, include:[models.Attachment]}).then(function(quizzes){
     if(formato==='json'){
       res.send(JSON.stringify(quizzes));
     }else if (formato === 'html' || formato ===''){
@@ -51,8 +50,9 @@ exports.show = function(req, res, next){
 	 if(formato==='json'){
            res.send(JSON.stringify(req.quiz));
          }else if (formato === 'html' || formato ===''){
-           res.render('quizzes/show',{quiz: req.quiz,
-                                      answer: answer});
+		models.User.findAll({order:['username']}).then(function(users) {		
+         	  res.render('quizzes/show',{quiz: req.quiz, answer: answer, users:users});
+		});
          }else{
            res.send("Formato no válido");
          }
@@ -75,7 +75,6 @@ exports.new = function(req, res, next){
 };
 
 //POST /quizzes/create
-
 exports.create = function(req, res, next){
   var authorId = req.session.user && req.session.user.id || 0;
 
